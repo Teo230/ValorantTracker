@@ -1,2 +1,3 @@
 # ValorantTracker
-Hey guys, finally Riot Games release his first version of Valorant API. I hope to create something cool! :D
+I am searching for a Junior Devloper to continue the application
+- No Payment (all this application is WOP in free time)
