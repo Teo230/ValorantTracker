@@ -1,0 +1,10 @@
+﻿ValorantTracker/packages
+ValorantTracker/.vs
+ValorantTracker/ValorantTracker.Client/obj
+ValorantTracker/ValorantTracker.Client/bin
+.vs/ValorantTracker
+.vs/ProjectSettings.json
+.vs
+ValorantTracker/ValorantTracker.UnitTest/bin
+ValorantTracker/ValorantTracker.UnitTest/obj
+ValorantTracker/ValorantTracker.UnitTest

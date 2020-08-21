@@ -1,0 +1,273 @@
+﻿<Window x:Class="ValorantTracker.Client.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ValorantTracker.Client"
+        xmlns:modern="http://modernwpf"
+        mc:Ignorable="d"
+        Title="MainWindow"
+        FontFamily="/ValorantTracker.Client;component/Resources/#VALORANT"
+        modern:Chrome.ShowCaptionIcon="False"
+        WindowStartupLocation="CenterScreen"
+        modern:Chrome.ShowCaptionText="False"
+        Style="{StaticResource ModernWindow}"
+        Cursor="Cross"
+        MinHeight="500"
+        MinWidth="700"
+        Height="750"
+        Width="1280"
+        Closed="Window_Closed">
+
+    <Window.Resources>
+        <Style x:Key="HomeTabControl" TargetType="TabControl">
+            <Setter Property="Background" Value="#4d4d4d"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Opacity" Value="0.8"/>
+            <Setter Property="FontFamily" Value="/ValorantTracker.Client;component/Resources/#VALORANT"></Setter>
+        </Style>
+
+        <Style x:Key="SectionStyle" TargetType="TabItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Grid Name="Panel">
+                            <ContentPresenter x:Name="ContentSite"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        ContentSource="Header"
+                                        Margin="10,2"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Panel" Property="Background" Value="#d16060" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="False">
+                                <Setter TargetName="Panel" Property="Background" Value="#1c1d21" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="BorderBrush" Value="Transparent"></Setter>
+            <Setter Property="BorderThickness" Value="0"></Setter>
+            <Setter Property="Foreground" Value="White"></Setter>
+            <Setter Property="FontSize" Value="20"></Setter>
+            <Setter Property="FontFamily" Value="/ValorantTracker.Client;component/Resources/#VALORANT"></Setter>
+        </Style>
+    </Window.Resources>
+    
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="/Resources/background_banner_1200x675.jpg"
+                        Stretch="UniformToFill">
+            </ImageBrush>
+        </Grid.Background>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <TabControl
+                    Style="{StaticResource HomeTabControl}"
+                    SelectionChanged="mainTabControl_SelectionChanged">
+                    <TabItem
+                        Header="Matches"
+                        Style="{StaticResource SectionStyle}">
+                        <ListView ItemsSource="{Binding MatchHistory, UpdateSourceTrigger=PropertyChanged}"
+                                  Margin="10">
+
+                            <ListView.View>
+
+                                <GridView AllowsColumnReorder="true">
+
+                                    <GridViewColumn DisplayMemberBinding="{Binding Path=MatchID}" 
+                                                    Header="MatchID" 
+                                                    Width="auto"/>
+                                    <GridViewColumn DisplayMemberBinding="{Binding Path=GameStartTime, StringFormat='hh:mm dd/MM/yyyy'}"
+                                                    Header="Time" 
+                                                    Width="auto"/>
+                                    <GridViewColumn DisplayMemberBinding="{Binding Path=TeamID}" 
+                                                    Header="Team" 
+                                                    Width="auto"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </TabItem>
+
+                    <TabItem                       
+                        Header="Competitive matchs"
+                        Style="{StaticResource SectionStyle}">
+                        <!--<ListView ItemsSource="{Binding Inventory, UpdateSourceTrigger=PropertyChanged}"
+                                  Margin="10">
+
+                            <ListView.View>
+
+                                <GridView AllowsColumnReorder="true">
+
+                                    <GridViewColumn DisplayMemberBinding="{Binding Path=name}" 
+                                                    Header="Name" 
+                                                    Width="auto"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>-->
+                    </TabItem>
+
+                    <TabItem                       
+                        Header="MMR"
+                        Style="{StaticResource SectionStyle}">
+                        <!--<ListView ItemsSource="{Binding Inventory, UpdateSourceTrigger=PropertyChanged}"
+                                  Margin="10">
+
+                            <ListView.View>
+
+                                <GridView AllowsColumnReorder="true">
+
+                                    <GridViewColumn DisplayMemberBinding="{Binding Path=name}" 
+                                                    Header="Name" 
+                                                    Width="auto"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>-->
+                    </TabItem>
+                    
+                    <TabItem                       
+                        Header="Inventory"
+                        Style="{StaticResource SectionStyle}">
+                        <!--<ListView ItemsSource="{Binding Inventory, UpdateSourceTrigger=PropertyChanged}"
+                                  Margin="10">
+
+                            <ListView.View>
+
+                                <GridView AllowsColumnReorder="true">
+
+                                    <GridViewColumn DisplayMemberBinding="{Binding Path=name}" 
+                                                    Header="Name" 
+                                                    Width="auto"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>-->
+                    </TabItem>
+
+                    <TabItem                       
+                        Header="Store"
+                        Style="{StaticResource SectionStyle}">
+                        <!--<ListView ItemsSource="{Binding Inventory, UpdateSourceTrigger=PropertyChanged}"
+                                  Margin="10">
+
+                            <ListView.View>
+
+                                <GridView AllowsColumnReorder="true">
+
+                                    <GridViewColumn DisplayMemberBinding="{Binding Path=name}" 
+                                                    Header="Name" 
+                                                    Width="auto"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>-->
+                    </TabItem>
+                </TabControl>
+            </Grid>
+
+            <Grid Grid.Row="1">
+                <StackPanel 
+                    Orientation="Horizontal"
+                    Height="30">
+
+                    <Button
+                        Command="{Binding Logout}"
+                        Visibility="{Binding LogoutVisibility}"
+                        Height="auto"
+                        Width="auto"
+                        Padding="5,0,5,0"
+                        Background="Transparent"
+                        BorderBrush="#d16060"
+                        FontFamily="/ValorantTracker.Client;component/Resources/#VALORANT"
+                        Content="Logout"
+                        Foreground="White">
+                    </Button>
+                    
+                    <Button
+                        Command="{Binding Login}"
+                        IsEnabled="{Binding LoginEnable}"
+                        Height="auto"
+                        Content="{Binding LoginText}"
+                        Padding="10,0,10,0"
+                        Background="Transparent"
+                        BorderBrush="#d16060"
+                        FontFamily="/ValorantTracker.Client;component/Resources/#VALORANT"
+                        Foreground="White"
+                        Width="auto">
+                        
+                    </Button>
+
+                    <Button
+                        Command="{Binding Settings}"
+                        Content="Settings"
+                        Height="auto"                       
+                        Padding="10,0,10,0"
+                        BorderBrush="#d16060"
+                        FontFamily="/ValorantTracker.Client;component/Resources/#VALORANT"
+                        Background="Transparent"
+                        Foreground="White"
+                        Visibility="Collapsed"
+                        Width="auto">
+                    </Button>
+
+                    <Button
+                        Command="{Binding InfoHelp}"
+                        Content="Info"
+                        Height="auto"                       
+                        Padding="10,0,10,0"
+                        BorderBrush="#d16060"
+                        FontFamily="/ValorantTracker.Client;component/Resources/#VALORANT"
+                        Background="Transparent"
+                        Foreground="White"
+                        Width="auto">
+                    </Button>
+
+                    <TextBlock
+                        Text="Valorant Points"
+                        FontFamily="/ValorantTracker.Client;component/Resources/#VALORANT"
+                        FontSize="15"
+                        Foreground="#d16060"
+                        Background="Transparent"
+                        Padding="10,0,10,0">
+                    </TextBlock>
+                    
+                    <TextBlock
+                        Text="{Binding ValorantPoints, UpdateSourceTrigger=PropertyChanged}"
+                        FontFamily="/ValorantTracker.Client;component/Resources/#VALORANT"
+                        FontSize="15"
+                        Foreground="White"
+                        Background="Transparent"
+                        Padding="0,0,10,0">
+                    </TextBlock>
+
+                    <TextBlock
+                        Text="Radiant Points"
+                        FontFamily="/ValorantTracker.Client;component/Resources/#VALORANT"
+                        FontSize="15"
+                        Foreground="#d16060"
+                        Background="Transparent"
+                        Padding="10,0,10,0">
+                    </TextBlock>
+                    
+                    <TextBlock
+                        Text="{Binding RadiantPoints, UpdateSourceTrigger=PropertyChanged}"
+                        FontFamily="/ValorantTracker.Client;component/Resources/#VALORANT"
+                        FontSize="15"
+                        Foreground="White"
+                        Background="Transparent"
+                        Padding="0,0,10,0">
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
+
