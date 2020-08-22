@@ -60,6 +60,9 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="Valorant.Rest.API">
+      <HintPath>..\..\Valorant.Rest.API.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -71,10 +74,7 @@
     </ApplicationDefinition>
     <Compile Include="API\HttpRequest.cs" />
     <Compile Include="Models\Match.cs" />
-    <Compile Include="Models\MatchDTO.cs" />
-    <Compile Include="Models\PlayerDTO.cs" />
     <Compile Include="Models\Region.cs" />
-    <Compile Include="Models\UserBalanceDTO.cs" />
     <Compile Include="Models\UserInfoDTO.cs" />
     <Compile Include="Models\UserSettings.cs" />
     <Compile Include="Models\ViewItem.cs" />

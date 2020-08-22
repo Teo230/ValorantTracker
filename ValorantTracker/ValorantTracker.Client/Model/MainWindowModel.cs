@@ -2,9 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Valorant.Rest.API;
+using Valorant.Rest.API.ModelDTO;
 using ValorantTracker.Client.API;
 using ValorantTracker.Client.Models;
 using ValorantTracker.Client.Utilities;
@@ -14,18 +17,28 @@ namespace ValorantTracker.Client.Model
     public class MainWindowModel
     {
         #region Prop
-        private HttpRequest _httpRequest;
+        public HttpClient _httpClient;
+        private ValorantClient _valorantClient;
         
         public UserInfoDTO playerInfo;
-        public List<PlayerDTO> player;
-        public Match match;
-        public UserBalanceDTO userBalance;
+        public PlayerDTO player;
+        public Valorant.Rest.API.ModelDTO.MatchDTO match;
+        public BalanceDTO userBalance;
         public EventHandler<EventValArgs> elaborationCompleted;
         #endregion
 
         #region Ctr
         public MainWindowModel()
         {
+            _httpClient = new HttpClient();
+
+            if (!_httpClient.DefaultRequestHeaders.Contains("Authorization") && !string.IsNullOrEmpty(GlobalManager.BearerToken))
+                _httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + GlobalManager.BearerToken);
+
+            if (!_httpClient.DefaultRequestHeaders.Contains("X-Riot-Entitlements-JWT") && !string.IsNullOrEmpty(GlobalManager.X_Riot_Entitlements_JWT))
+                _httpClient.DefaultRequestHeaders.Add("X-Riot-Entitlements-JWT", GlobalManager.X_Riot_Entitlements_JWT);
+
+            _valorantClient = new ValorantClient(_httpClient, GlobalManager.clientVersion);
         }
         #endregion
 
@@ -34,9 +47,9 @@ namespace ValorantTracker.Client.Model
         {
             var task = new Task(async () =>
             {
-                _httpRequest = new HttpRequest();
+                var httprequest = new HttpRequest();
                 dynamic data = new JObject();
-                playerInfo = _httpRequest.Post<UserInfoDTO>($"{GlobalManager.GetRightEndpoint(GlobalEnum.EndpointsEnum.AuthRiot)}userinfo",data);
+                playerInfo = httprequest.Post<UserInfoDTO>($"https://auth.riotgames.com/userinfo",data);
                 ElaborationCompleted(new EventValArgs { PlayerIdReceived = playerInfo != null});
             });
             task.Start();
@@ -46,10 +59,7 @@ namespace ValorantTracker.Client.Model
         {
             var task = new Task(async () =>
             {
-                _httpRequest = new HttpRequest();
-                dynamic data = new JObject();
-                data = "[\"" + playerInfo.sub + "\"]";
-                player = _httpRequest.Put<List<PlayerDTO>>($"{GlobalManager.GetRightEndpoint(GlobalManager.Region)}name-service/v2/players", data);
+                player = _valorantClient.GetPlayer(GlobalManager.GetRightEndpoint(GlobalManager.Region), playerInfo.sub);
                 ElaborationCompleted(new EventValArgs { PlayerReceived = playerInfo != null });
             });
             task.Start();
@@ -57,16 +67,23 @@ namespace ValorantTracker.Client.Model
 
         public void GetMatchHistory()
         {
-            _httpRequest = new HttpRequest();
-            match = _httpRequest.Get<Match>($"{GlobalManager.GetRightEndpoint(GlobalManager.Region)}match-history/v1/history/{GlobalManager.Player.Subject}");
-            ElaborationCompleted(new EventValArgs { MatchReceived = playerInfo != null });
+            var task = new Task(async () =>
+            {
+                match = _valorantClient.GetMatches(GlobalManager.GetRightEndpoint(GlobalManager.Region), GlobalManager.Player.PlayerId);
+                ElaborationCompleted(new EventValArgs { MatchReceived = match != null });
+            });
+            task.Start();
         }
 
         public void GetUserBalance()
         {
-            _httpRequest = new HttpRequest();
-            userBalance = _httpRequest.Get<UserBalanceDTO>($"{GlobalManager.GetRightEndpoint(GlobalManager.Region)}store/v1/wallet/{GlobalManager.Player.Subject}");
-            ElaborationCompleted(new EventValArgs { BalanceReceived = userBalance != null });
+            var task = new Task(async () =>
+            {
+                userBalance = _valorantClient.GetBalance(GlobalManager.GetRightEndpoint(GlobalManager.Region), GlobalManager.Player.PlayerId);
+                ElaborationCompleted(new EventValArgs { BalanceReceived = userBalance != null });;
+            });
+            task.Start();
+
         }
         #endregion
 

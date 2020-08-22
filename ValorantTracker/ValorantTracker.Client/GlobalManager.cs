@@ -7,6 +7,8 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Valorant.Rest.API.ModelDTO;
+using Valorant.Rest.API.Utilities;
 using ValorantTracker.Client.Models;
 using ValorantTracker.Client.Properties;
 using ValorantTracker.Client.Utilities;
@@ -19,6 +21,7 @@ namespace ValorantTracker.Client
         #region Prop
         public static string BearerToken { get; set; }
         public static string X_Riot_Entitlements_JWT { get; set; }
+        public static string clientVersion { get; set; } = "release-01.05-shipping-15-460559";
         public static PlayerDTO Player { get; set; }
         public static DateTime? ExpiresDateTime { get; set; }
         public static UserSettings settings { get; set; }
@@ -26,23 +29,21 @@ namespace ValorantTracker.Client
         #endregion
 
         #region Methods
-        public static string GetRightEndpoint(EndpointsEnum region)
+        public static ValorantEnum.RegionEnum GetRightEndpoint(EndpointsEnum region)
         {
             switch(region)
             {
                 case EndpointsEnum.Europe:
-                    return "https://pd.EU.a.pvp.net/";
+                    return ValorantEnum.RegionEnum.Europe;
                 case EndpointsEnum.NorthAmerica:
-                    return "https://pd.NA.a.pvp.net/";
+                    return ValorantEnum.RegionEnum.NorthAmerica;
                 case EndpointsEnum.Asia:
-                    return "https://pd.AP.a.pvp.net/";
+                    return ValorantEnum.RegionEnum.Asia;
                 case EndpointsEnum.Korea:
-                    return "https://pd.KO.a.pvp.net/";
-                case EndpointsEnum.AuthRiot:
-                    return "https://auth.riotgames.com/";
+                    return ValorantEnum.RegionEnum.Korea;
             }
 
-            return null;
+            return ValorantEnum.RegionEnum.Europe;
         }
 
         public static void SaveUserInfo()

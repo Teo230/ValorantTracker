@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ValorantTracker.Client.Properties;
 using static ValorantTracker.Client.Utilities.GlobalEnum;
+using Valorant.Rest.API;
 
 namespace ValorantTracker.Client.API
 {
@@ -16,6 +17,8 @@ namespace ValorantTracker.Client.API
     {
         #region Prop
         private HttpClient session { get; set; }
+        private ValorantClient valorantClient { get; set; }
+        private string clientVersion { get; set; }
         #endregion
 
         #region Ctr
@@ -23,10 +26,13 @@ namespace ValorantTracker.Client.API
         {
             session = new HttpClient();
 
-            if(!string.IsNullOrEmpty(GlobalManager.BearerToken))
+            if(!session.DefaultRequestHeaders.Contains("Authorization") && !string.IsNullOrEmpty(GlobalManager.BearerToken))
                 session.DefaultRequestHeaders.Add("Authorization", "Bearer " + GlobalManager.BearerToken);
-            if(!string.IsNullOrEmpty(GlobalManager.X_Riot_Entitlements_JWT))
+
+            if (!session.DefaultRequestHeaders.Contains("X-Riot-Entitlements-JWT") && !string.IsNullOrEmpty(GlobalManager.X_Riot_Entitlements_JWT))
                 session.DefaultRequestHeaders.Add("X-Riot-Entitlements-JWT", GlobalManager.X_Riot_Entitlements_JWT);
+
+            clientVersion = GlobalManager.clientVersion;
         }
         #endregion
 
@@ -83,27 +89,10 @@ namespace ValorantTracker.Client.API
             }
         }
 
-        private string GetAuthorization()
-        {
-            dynamic data = new JObject();
-
-            data.client_id = "play-valorant-web-prod";
-            data.nonce = "1";
-            data.redirect_uri = "https://playvalorant.com/opt_in";
-            data.response_type = "token id_token";
-
-            return Post<dynamic>("https://auth.riotgames.com/api/v1/authorization", data).type;
-        }
-
         public bool PerfomLogin(string username, string password, bool rememberMe)
         {
-            dynamic userData = new JObject();
-
-            userData.type = GetAuthorization();
-            userData.username = username;
-            userData.password = password;
-
-            string userConfig = Put<dynamic>("https://auth.riotgames.com/api/v1/authorization", userData).response.parameters.uri;
+            valorantClient = new ValorantClient(session, clientVersion);
+            string userConfig = valorantClient.GetUserParameters(username,password).response.parameters.uri;
 
             string[] config = userConfig.ToString().Remove(0, userConfig.IndexOf('#') + 1).Split('&');
             GlobalManager.BearerToken = config[0].Remove(0, config[0].IndexOf('=') + 1);
@@ -111,8 +100,9 @@ namespace ValorantTracker.Client.API
             TimeSpan time = TimeSpan.FromSeconds(seconds);
             GlobalManager.ExpiresDateTime = DateTime.Now.Add(time);
             session.DefaultRequestHeaders.Add("Authorization", "Bearer " + GlobalManager.BearerToken);
+            valorantClient = new ValorantClient(session, clientVersion);
 
-            GlobalManager.X_Riot_Entitlements_JWT = Post<dynamic>("https://entitlements.auth.riotgames.com/api/token/v1", new JObject().ToString()).entitlements_token;
+            GlobalManager.X_Riot_Entitlements_JWT = valorantClient.GetEntitlementsToken();
             session.DefaultRequestHeaders.Add("X-Riot-Entitlements-JWT", GlobalManager.X_Riot_Entitlements_JWT);
 
             GlobalManager.settings = new UserSettings();

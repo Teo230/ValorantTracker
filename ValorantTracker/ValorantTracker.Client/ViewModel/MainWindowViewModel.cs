@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Valorant.Rest.API.ModelDTO;
 using ValorantTracker.Client.API;
 using ValorantTracker.Client.Model;
 using ValorantTracker.Client.Models;
@@ -38,8 +39,8 @@ namespace ValorantTracker.Client.ViewModel
             }
         }
 
-        private List<MatchDTO.HistoryDTO> _matchHistory;
-        public List<MatchDTO.HistoryDTO> MatchHistory
+        private List<Match.HistoryDTO> _matchHistory;
+        public List<Match.HistoryDTO> MatchHistory
         {
             get => _matchHistory;
 
@@ -129,9 +130,14 @@ namespace ValorantTracker.Client.ViewModel
                 if (e.PlayerReceived.Value)
                 {
                     GlobalManager.Player = new PlayerDTO();
-                    GlobalManager.Player = _windowModel.player.FirstOrDefault();
+                    GlobalManager.Player = _windowModel.player;
                     LoginText = GlobalManager.Player.GameName + "#" + GlobalManager.Player.TagLine;
                     LogoutVisibility = Visibility.Visible;
+
+                    _windowModel = new MainWindowModel();
+                    _mainWindow.elaborationCompleted += TabItemElaboration;
+                    _windowModel.elaborationCompleted += ModelElaboration;
+
                     _windowModel.GetMatchHistory();
                     _windowModel.GetUserBalance();
                 }
@@ -142,10 +148,10 @@ namespace ValorantTracker.Client.ViewModel
                 if (e.MatchReceived.Value)
                 {
                     //MessageBox.Show("Matches!");
-                    var matchHistoryList = new List<MatchDTO.HistoryDTO>();
+                    var matchHistoryList = new List<Match.HistoryDTO>();
                     _windowModel.match.history.ForEach(x =>
                     {
-                        var matchHistory = new MatchDTO.HistoryDTO()
+                        var matchHistory = new Match.HistoryDTO()
                         {
                             MatchID = x.MatchID,
                             TeamID = x.TeamID,
@@ -171,7 +177,7 @@ namespace ValorantTracker.Client.ViewModel
         {
             if (GlobalManager.Player != null)
             {
-                if (GlobalManager.Player.Subject != null)
+                if (GlobalManager.Player.PlayerId != null)
                 {
                     if (e.TabItemReceived.HasValue)
                     {
@@ -245,7 +251,7 @@ namespace ValorantTracker.Client.ViewModel
                         {
                             LogoutVisibility = Visibility.Collapsed;
                             LoginText = "Login";
-                            MatchHistory = new List<MatchDTO.HistoryDTO>();
+                            MatchHistory = new List<Match.HistoryDTO>();
                             RadiantPoints = 0;
                             ValorantPoints = 0;
                             GlobalManager.BearerToken = string.Empty;
