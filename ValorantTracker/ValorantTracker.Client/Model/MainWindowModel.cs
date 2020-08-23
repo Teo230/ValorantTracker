@@ -23,7 +23,10 @@ namespace ValorantTracker.Client.Model
         public UserInfoDTO playerInfo;
         public PlayerDTO player;
         public Valorant.Rest.API.ModelDTO.MatchDTO match;
+        public CompetitiveMatchDTO competitiveMatch;
+        public PlayerStoreDTO store;
         public BalanceDTO userBalance;
+        public IdListDTO contentList;
         public EventHandler<EventValArgs> elaborationCompleted;
         #endregion
 
@@ -59,8 +62,8 @@ namespace ValorantTracker.Client.Model
         {
             var task = new Task(async () =>
             {
-                player = _valorantClient.GetPlayer(GlobalManager.GetRightEndpoint(GlobalManager.Region), playerInfo.sub);
-                ElaborationCompleted(new EventValArgs { PlayerReceived = playerInfo != null });
+                player = _valorantClient.GetPlayer(GlobalManager.GetRightEndpoint(GlobalManager.Region));
+                ElaborationCompleted(new EventValArgs { PlayerReceived = player != null });
             });
             task.Start();
         }
@@ -84,6 +87,36 @@ namespace ValorantTracker.Client.Model
             });
             task.Start();
 
+        }
+
+        public void GetCompetitiveMatchHistory()
+        {
+            var task = new Task(async () =>
+            {
+                competitiveMatch = _valorantClient.GetCompetitiveMatch(GlobalManager.GetRightEndpoint(GlobalManager.Region), GlobalManager.Player.PlayerId);
+                ElaborationCompleted(new EventValArgs { CompMatchReceived = competitiveMatch != null });
+            });
+            task.Start();
+        }
+
+        public void GetStore()
+        {
+            var task = new Task(async () =>
+            {
+                store = _valorantClient.GetPlayerStore(GlobalManager.GetRightEndpoint(GlobalManager.Region), GlobalManager.Player.PlayerId);
+                ElaborationCompleted(new EventValArgs { StoreReceived = store != null });
+            });
+            task.Start();
+        }
+
+        public void GetContent()
+        {
+            var task = new Task(async () =>
+            {
+                contentList = _valorantClient.GetIDList(GlobalManager.GetRightEndpoint(GlobalManager.Region));
+                ElaborationCompleted(new EventValArgs { ContentReceived = contentList != null });
+            });
+            task.Start();
         }
         #endregion
 

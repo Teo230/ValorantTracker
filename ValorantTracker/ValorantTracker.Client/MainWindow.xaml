@@ -57,7 +57,7 @@
             <Setter Property="FontFamily" Value="/ValorantTracker.Client;component/Resources/#VALORANT"></Setter>
         </Style>
     </Window.Resources>
-    
+
     <Grid>
         <Grid.Background>
             <ImageBrush ImageSource="/Resources/background_banner_1200x675.jpg"
@@ -100,21 +100,33 @@
                     </TabItem>
 
                     <TabItem                       
-                        Header="Competitive matchs"
+                        Header="Competitive Matches"
                         Style="{StaticResource SectionStyle}">
-                        <!--<ListView ItemsSource="{Binding Inventory, UpdateSourceTrigger=PropertyChanged}"
+                        <ListView ItemsSource="{Binding CompetitiveMatchHistory, UpdateSourceTrigger=PropertyChanged}"
                                   Margin="10">
 
                             <ListView.View>
 
                                 <GridView AllowsColumnReorder="true">
 
-                                    <GridViewColumn DisplayMemberBinding="{Binding Path=name}" 
-                                                    Header="Name" 
+                                    <GridViewColumn DisplayMemberBinding="{Binding Path=MatchID}" 
+                                                    Header="MatchId" 
+                                                    Width="auto"/>
+
+                                    <GridViewColumn DisplayMemberBinding="{Binding Path=GameStartTime}" 
+                                                    Header="Date Time" 
+                                                    Width="auto"/>
+
+                                    <GridViewColumn DisplayMemberBinding="{Binding Path=TierUpdate}" 
+                                                    Header="Rank Point" 
+                                                    Width="auto"/>
+
+                                    <GridViewColumn DisplayMemberBinding="{Binding Path=Movement}" 
+                                                    Header="Movement" 
                                                     Width="auto"/>
                                 </GridView>
                             </ListView.View>
-                        </ListView>-->
+                        </ListView>
                     </TabItem>
 
                     <TabItem                       
@@ -134,7 +146,7 @@
                             </ListView.View>
                         </ListView>-->
                     </TabItem>
-                    
+
                     <TabItem                       
                         Header="Inventory"
                         Style="{StaticResource SectionStyle}">
@@ -156,19 +168,47 @@
                     <TabItem                       
                         Header="Store"
                         Style="{StaticResource SectionStyle}">
-                        <!--<ListView ItemsSource="{Binding Inventory, UpdateSourceTrigger=PropertyChanged}"
+                        <StackPanel>
+                            <ListView ItemsSource="{Binding Featured, UpdateSourceTrigger=PropertyChanged}"
                                   Margin="10">
 
-                            <ListView.View>
+                                <ListView.View>
 
-                                <GridView AllowsColumnReorder="true">
+                                    <GridView AllowsColumnReorder="true">
 
-                                    <GridViewColumn DisplayMemberBinding="{Binding Path=name}" 
+                                        <GridViewColumn DisplayMemberBinding="{Binding Path=ItemId}" 
+                                                    Header="Item Id" 
+                                                    Width="auto"/>
+                                        <GridViewColumn DisplayMemberBinding="{Binding Path=RemainSeconds, StringFormat='dd\\ hh\\:mm\\:ss'}" 
+                                                    Header="Remaining Time" 
+                                                    Width="auto"/>
+                                        <GridViewColumn DisplayMemberBinding="{Binding Path=ValorantPrice}" 
+                                                    Header="Price" 
+                                                    Width="auto"/>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+
+                            <ListView ItemsSource="{Binding Offers, UpdateSourceTrigger=PropertyChanged}"
+                                  Margin="10">
+
+                                <ListView.View>
+
+                                    <GridView AllowsColumnReorder="true">
+
+                                        <GridViewColumn DisplayMemberBinding="{Binding Path=ItemName}" 
                                                     Header="Name" 
                                                     Width="auto"/>
-                                </GridView>
-                            </ListView.View>
-                        </ListView>-->
+                                        <GridViewColumn DisplayMemberBinding="{Binding Path=RemainSeconds}" 
+                                                    Header="Remaining Time" 
+                                                    Width="auto"/>
+                                        <GridViewColumn DisplayMemberBinding="{Binding Path=ValorantPrice}" 
+                                                    Header="Price" 
+                                                    Width="auto"/>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </StackPanel>
                     </TabItem>
                 </TabControl>
             </Grid>
@@ -190,7 +230,7 @@
                         Content="Logout"
                         Foreground="White">
                     </Button>
-                    
+
                     <Button
                         Command="{Binding Login}"
                         IsEnabled="{Binding LoginEnable}"
@@ -202,7 +242,7 @@
                         FontFamily="/ValorantTracker.Client;component/Resources/#VALORANT"
                         Foreground="White"
                         Width="auto">
-                        
+
                     </Button>
 
                     <Button
@@ -238,7 +278,7 @@
                         Background="Transparent"
                         Padding="10,0,10,0">
                     </TextBlock>
-                    
+
                     <TextBlock
                         Text="{Binding ValorantPoints, UpdateSourceTrigger=PropertyChanged}"
                         FontFamily="/ValorantTracker.Client;component/Resources/#VALORANT"
@@ -256,7 +296,7 @@
                         Background="Transparent"
                         Padding="10,0,10,0">
                     </TextBlock>
-                    
+
                     <TextBlock
                         Text="{Binding RadiantPoints, UpdateSourceTrigger=PropertyChanged}"
                         FontFamily="/ValorantTracker.Client;component/Resources/#VALORANT"

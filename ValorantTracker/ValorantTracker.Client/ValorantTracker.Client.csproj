@@ -74,6 +74,7 @@
     </ApplicationDefinition>
     <Compile Include="API\HttpRequest.cs" />
     <Compile Include="Models\Match.cs" />
+    <Compile Include="Models\Offers.cs" />
     <Compile Include="Models\Region.cs" />
     <Compile Include="Models\UserInfoDTO.cs" />
     <Compile Include="Models\UserSettings.cs" />

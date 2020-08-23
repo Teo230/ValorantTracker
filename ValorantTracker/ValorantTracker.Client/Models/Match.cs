@@ -17,6 +17,10 @@ namespace ValorantTracker.Client.Models
             public DateTime GameStartTime { get; set; }
 
             public string TeamID { get; set; }
+
+            public int TierUpdate { get; set; }
+
+            public string Movement { get; set; }
         }  
     }
 }
